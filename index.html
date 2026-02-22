@@ -4,86 +4,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finanze Tommaso</title>
+<title>Finanze Tommaso PRO</title>
 <style>
-body {font-family:Arial;background:#0b0f1a;color:#e6f0ff;margin:0;padding:20px;}
-.card {background:#111a2e;border:1px solid #1f3b7a;border-radius:12px;padding:16px;margin-bottom:16px;}
-h1 {color:#6aa0ff;}
-input {padding:8px;border-radius:8px;border:1px solid #1f3b7a;background:#0e1630;color:#e6f0ff;}
-button {padding:10px 14px;border-radius:10px;border:none;background:#2b6cff;color:white;cursor:pointer;}
-.green {color:#4cff88;}
-.red {color:#ff5c5c;}
+body { font-family: Arial, sans-serif; background:#0f172a; color:white; margin:0; padding:20px; }
+.card { background:#1e293b; padding:20px; border-radius:12px; margin-bottom:15px; }
+h1 { margin-top:0; }
+input, button { padding:10px; border-radius:8px; border:none; margin:5px 0; }
+button { background:#22c55e; color:white; font-weight:bold; }
+.progress { height:20px; background:#334155; border-radius:10px; overflow:hidden; }
+.bar { height:100%; background:#22c55e; width:0%; }
 </style>
 </head>
 <body>
 
-<h1>💰 Finanze Tommaso ULTRA</h1>
+<h1>💰 Finanze Tommaso PRO</h1>
 
 <div class="card">
-<h2>Accesso</h2>
-<input type="password" id="pwd" placeholder="Password">
-<button onclick="login()">Entra</button>
-<p id="msg"></p>
-</div>
-
-<div id="app" style="display:none;">
-
-<div class="card">
-<h2>Entrate e Spese</h2>
-Entrate € <input type="number" id="entrate" value="2000"><br><br>
-Spese € <input type="number" id="spese" value="1200"><br><br>
-<button onclick="calcola()">Calcola</button>
-<p>Risparmio: <span id="risp">0</span> €</p>
-<p>Goal 10k: <span id="goal">0</span>%</p>
+<h2>Obiettivo 50.000€</h2>
+<input type="number" id="risparmi" placeholder="Quanto hai risparmiato">
+<button onclick="aggiorna()">Aggiorna</button>
+<div class="progress"><div class="bar" id="barra"></div></div>
+<p id="testo"></p>
 </div>
 
 <div class="card">
-<h2>Patrimonio previsto</h2>
-<p id="patr"></p>
+<h2>Simulazione Casa</h2>
+<input type="number" id="prezzo" placeholder="Prezzo casa">
+<input type="number" id="anticipo" placeholder="Anticipo">
+<input type="number" id="tasso" placeholder="Tasso %">
+<input type="number" id="anni" placeholder="Anni mutuo">
+<button onclick="calcolaMutuo()">Calcola rata</button>
+<p id="rata"></p>
 </div>
 
 <div class="card">
-<h2>Previsione raggiungimento 10.000€</h2>
-<p id="dataGoal"></p>
-</div>
-
+<h2>Contatore giorni senza spese inutili</h2>
+<button onclick="incrementa()">+1 giorno</button>
+<p id="giorni"></p>
 </div>
 
 <script>
-const PASSWORD="Tommaso2026";
+let goal = 50000;
 
-function login(){
-  if(document.getElementById("pwd").value===PASSWORD){
-    document.getElementById("app").style.display="block";
-    document.getElementById("msg").innerText="Accesso riuscito";
-  }else{
-    document.getElementById("msg").innerText="Password errata";
-  }
+function aggiorna() {
+ let val = document.getElementById('risparmi').value;
+ let perc = (val / goal) * 100;
+ document.getElementById('barra').style.width = perc + '%';
+ document.getElementById('testo').innerText = "Sei al " + perc.toFixed(1) + "% dell'obiettivo";
+ localStorage.setItem("risparmi", val);
 }
 
-function calcola(){
-  let e=parseFloat(document.getElementById("entrate").value)||0;
-  let s=parseFloat(document.getElementById("spese").value)||0;
-  let r=e-s;
-  document.getElementById("risp").innerText=r.toFixed(2);
+function calcolaMutuo() {
+ let prezzo = parseFloat(document.getElementById('prezzo').value);
+ let anticipo = parseFloat(document.getElementById('anticipo').value);
+ let tasso = parseFloat(document.getElementById('tasso').value) / 100 / 12;
+ let anni = parseFloat(document.getElementById('anni').value) * 12;
+ let capitale = prezzo - anticipo;
 
-  let perc=Math.min((r/10000)*100,100);
-  document.getElementById("goal").innerText=perc.toFixed(1);
+ let rata = capitale * (tasso * Math.pow(1+tasso, anni)) / (Math.pow(1+tasso, anni) - 1);
+ document.getElementById('rata').innerText = "Rata mensile: " + rata.toFixed(2) + " €";
+}
 
-  let anni="";
-  let tot=0;
-  for(let y=2026;y<=2028;y++){
-    tot+=r*12;
-    anni+=y+": "+tot.toFixed(0)+" €<br>";
-  }
-  document.getElementById("patr").innerHTML=anni;
+let giorni = localStorage.getItem("giorni") || 0;
+document.getElementById("giorni").innerText = giorni + " giorni";
 
-  if(r>0){
-    let mesi=Math.ceil(10000/r);
-    document.getElementById("dataGoal").innerText="Circa "+mesi+" mesi per arrivare a 10.000€";
-  }else{
-    document.getElementById("dataGoal").innerText="Risparmio negativo";
-  }
+function incrementa() {
+ giorni++;
+ localStorage.setItem("giorni", giorni);
+ document.getElementById("giorni").innerText = giorni + " giorni";
 }
 </script>
 
