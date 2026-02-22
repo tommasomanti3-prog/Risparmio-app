@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanze Tommaso</title>
+<style>
+body {font-family:Arial;background:#0b0f1a;color:#e6f0ff;margin:0;padding:20px;}
+.card {background:#111a2e;border:1px solid #1f3b7a;border-radius:12px;padding:16px;margin-bottom:16px;}
+h1 {color:#6aa0ff;}
+input {padding:8px;border-radius:8px;border:1px solid #1f3b7a;background:#0e1630;color:#e6f0ff;}
+button {padding:10px 14px;border-radius:10px;border:none;background:#2b6cff;color:white;cursor:pointer;}
+.green {color:#4cff88;}
+.red {color:#ff5c5c;}
+</style>
+</head>
+<body>
+
+<h1>💰 Finanze Tommaso ULTRA</h1>
+
+<div class="card">
+<h2>Accesso</h2>
+<input type="password" id="pwd" placeholder="Password">
+<button onclick="login()">Entra</button>
+<p id="msg"></p>
+</div>
+
+<div id="app" style="display:none;">
+
+<div class="card">
+<h2>Entrate e Spese</h2>
+Entrate € <input type="number" id="entrate" value="2000"><br><br>
+Spese € <input type="number" id="spese" value="1200"><br><br>
+<button onclick="calcola()">Calcola</button>
+<p>Risparmio: <span id="risp">0</span> €</p>
+<p>Goal 10k: <span id="goal">0</span>%</p>
+</div>
+
+<div class="card">
+<h2>Patrimonio previsto</h2>
+<p id="patr"></p>
+</div>
+
+<div class="card">
+<h2>Previsione raggiungimento 10.000€</h2>
+<p id="dataGoal"></p>
+</div>
+
+</div>
+
+<script>
+const PASSWORD="Tommaso2026";
+
+function login(){
+  if(document.getElementById("pwd").value===PASSWORD){
+    document.getElementById("app").style.display="block";
+    document.getElementById("msg").innerText="Accesso riuscito";
+  }else{
+    document.getElementById("msg").innerText="Password errata";
+  }
+}
+
+function calcola(){
+  let e=parseFloat(document.getElementById("entrate").value)||0;
+  let s=parseFloat(document.getElementById("spese").value)||0;
+  let r=e-s;
+  document.getElementById("risp").innerText=r.toFixed(2);
+
+  let perc=Math.min((r/10000)*100,100);
+  document.getElementById("goal").innerText=perc.toFixed(1);
+
+  let anni="";
+  let tot=0;
+  for(let y=2026;y<=2028;y++){
+    tot+=r*12;
+    anni+=y+": "+tot.toFixed(0)+" €<br>";
+  }
+  document.getElementById("patr").innerHTML=anni;
+
+  if(r>0){
+    let mesi=Math.ceil(10000/r);
+    document.getElementById("dataGoal").innerText="Circa "+mesi+" mesi per arrivare a 10.000€";
+  }else{
+    document.getElementById("dataGoal").innerText="Risparmio negativo";
+  }
+}
+</script>
+
+</body>
+</html>
